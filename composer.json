@@ -1,0 +1,28 @@
+{
+  "name": "devgenii/socialconnect",
+  "description": "Login to Magento 2 store using social accounts like Facebook",
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Marko",
+      "email": "marko@devgenii.com",
+      "homepage": "https://devgenii.com"
+    }
+  ],
+  "license": [
+    "GPL-2.0"
+  ],
+  "require": {
+    "php": "~5.5.0|~5.6.0|~7.0.0",
+    "magento/framework": "~100.0.9"
+  },
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "DevGenii\\SocialConnect\\": "src"
+    }
+  }
+}
