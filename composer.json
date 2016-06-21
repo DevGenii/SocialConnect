@@ -1,6 +1,6 @@
 {
   "name": "devgenii/socialconnect",
-  "description": "Login or register for Magento 2 stores using social accounts like Facebook",
+  "description": "Register and login to Magento 2 store using social accounts like Facebook",
   "type": "magento2-module",
   "version": "1.0.0",
   "authors": [
