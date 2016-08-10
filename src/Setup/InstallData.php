@@ -25,22 +25,22 @@ class InstallData implements InstallDataInterface
      *
      * @var array
      */
-    protected $customerAttributes = array(
-        'devgenii_socialconnect_fid' => array(
+    protected $customerAttributes = [
+        'devgenii_socialconnect_fid' => [
             'type' => 'text',
             'visible' => false,
             'required' => false,
             'user_defined' => false,
             'system' => false   // Must be non system, else customer service can not update it
-        ),
-        'devgenii_socialconnect_ftoken' => array(
+        ],
+        'devgenii_socialconnect_ftoken' => [
             'type' => 'text',
             'visible' => false,
             'required' => false,
             'user_defined' => false,
             'system' => false   // Must be non system, else customer service can not update it
-        )
-    );
+        ]
+    ];
 
     /**
      * Init
