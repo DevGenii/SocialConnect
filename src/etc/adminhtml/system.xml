@@ -26,7 +26,7 @@
                         <field id="enabled">1</field>
                     </depends>
                 </field>
-                <field id="client_secret" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="client_secret" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Facebook App Secret</label>
                     <validate>required-entry</validate>
                     <depends>

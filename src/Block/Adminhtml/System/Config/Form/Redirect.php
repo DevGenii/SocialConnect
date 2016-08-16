@@ -31,10 +31,18 @@ class Redirect extends \DevGenii\SocialConnect\Block\Adminhtml\System\Config\For
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         if($this->getAuthProvider()) {
+            $scope = $this->getFormScope();
+
             return sprintf(
-                '<pre style="margin: 0 !important; padding-top: 7px;">%ssocialconnect/%s/connect/</pre>',
-                $this->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB),
-                $this->getAuthProvider()
+                '<pre style="%s">%s</pre>',
+                self::STYLE,
+                $this->url->getUrl(
+                    sprintf('socialconnect/%s/connect', $this->getAuthProvider()),
+                    [
+                        '_scope' => $scope,
+                        '_nosid' => true
+                    ]
+                )
             );
         }
     }

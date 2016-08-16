@@ -9,9 +9,17 @@ class Origin extends \DevGenii\SocialConnect\Block\Adminhtml\System\Config\Form\
      */
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
+        $scope = $this->getFormScope();
+
         return sprintf(
-            '<pre style="margin: 0 !important; padding-top: 7px;">%s</pre>',
-            $this->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB)
+            '<pre style="%s">%s</pre>',
+            self::STYLE,
+            $this->url->getBaseUrl(
+                [
+                    '_scope' => $scope,
+                    '_nosid' => true
+                ]
+            )
         );
     }
 

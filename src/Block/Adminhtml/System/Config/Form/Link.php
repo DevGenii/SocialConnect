@@ -52,7 +52,8 @@ class Link extends \DevGenii\SocialConnect\Block\Adminhtml\System\Config\Form\Ba
      */
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element) {
         return sprintf(
-            '<div style="padding-top: 7px;"><a href="%s" target="_blank">%s</a></div>',
+            '<div style="%s"><a href="%s" target="_blank">%s</a></div>',
+            self::STYLE,
             $this->getLinkHref(),
             $this->getLinkTitle()
         );
