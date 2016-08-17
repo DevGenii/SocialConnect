@@ -14,10 +14,6 @@ class Url extends \Magento\Framework\Url
      */
     protected function _isSecure()
     {
-        if(!$this->_request->isSecure()) {
-            return parent::_isSecure();
-        }
-
         /*
          * Magento 2 issue #6175 "Unable to generate unsecure URL if current URL is secure"
          * https://github.com/magento/magento2/issues/6175
