@@ -4,7 +4,6 @@ namespace DevGenii\SocialConnect\Model\Facebook\Data;
 
 class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
 {
-
     /**
      *
      * @var \Magento\Customer\Api\Data\CustomerInterface

@@ -2,7 +2,6 @@
 
 namespace DevGenii\SocialConnect\Model\Facebook\Data;
 
-
 /**
  * Factory class for @see \DevGenii\SocialConnect\Model\Facebook\Data\Customer
  */

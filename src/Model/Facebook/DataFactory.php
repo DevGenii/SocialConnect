@@ -1,6 +1,6 @@
 <?php
-namespace DevGenii\SocialConnect\Model\Facebook;
 
+namespace DevGenii\SocialConnect\Model\Facebook;
 
 /**
  * Factory class for @see \DevGenii\SocialConnect\Model\Facebook\Data
