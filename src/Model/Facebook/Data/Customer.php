@@ -76,8 +76,8 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
             );
         }
 
-        if(!($socialconnectFid = $this->customer->getDevgeniiSocialconnectFid()) ||
-            !($socialconnectFtoken = $this->customer->getDevgeniiSocialconnectFtoken())) {
+        if(!($socialconnectFid = $this->customer->getCustomAttribute('devgenii_socialconnect_fid')) ||
+            !($socialconnectFtoken = $this->customer->getCustomAttribute('devgenii_socialconnect_ftoken'))) {
             throw new \Exception(
                 __('Could not retrieve token by customer id')
             );
@@ -111,14 +111,14 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
             );
         }
 
-        if(!($socialconnectFid = $this->customer->getDevGeniiSocialconnectFid()) ||
-            !($socialconnectFtoken = $this->customer->getDevGeniiSocialconnectFtoken())) {
+        if(!($facebookId = $this->customer->getExtensionAttributes()->getDevgeniiSocialconnectFid()) ||
+            !($facebookToken = $this->customer->getExtensionAttributes()->getDevgeniiSocialconnectFtoken())) {
             throw new \Exception(
                 __('Could not retrieve token by customer id')
             );
         }
 
-        $this->setAccessToken($socialconnectFtoken);
+        $this->setAccessToken($facebookToken);
         parent::load();
 
         return $this;
