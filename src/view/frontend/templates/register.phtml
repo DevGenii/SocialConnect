@@ -1,0 +1,12 @@
+<?php
+/** @var $block \DevGenii\SocialConnect\Block\Container\Register */
+?>
+<div class="devgenii-socialconnect-container devgenii-socialconnect-container-register">
+    <?php if($block->facebookEnabled()): ?>
+    <div class="devgenii-socialconnect-login-facebook">
+        <h3><?php echo __('Facebook Connect') ?></h3>
+        <p><?php echo __('You can register using your <strong>Facebook</strong> account.') ?></p>
+        <?php echo $this->getChildHtml('devgenii_socialconnect.register.facebook.button'); ?>
+    </div>
+    <?php endif; ?>
+</div>

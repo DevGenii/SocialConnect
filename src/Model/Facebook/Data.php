@@ -18,19 +18,19 @@ class Data extends \Magento\Framework\DataObject
     /**
      * Facebook client model
      *
-     * @var \DevGenii\SocialConnect\Model\Facebook\Oauth2\Client
+     * @var \DevGenii\SocialConnect\Model\Facebook\Client
      */
     protected $client;
 
     /**
      *
-     * @param \DevGenii\SocialConnect\Model\Facebook\Oauth2\Client $client
+     * @param \DevGenii\SocialConnect\Model\Facebook\Client $client
      * @param array $params
      * @param string $target
      * @param array $data
      */
     public function __construct(
-        \DevGenii\SocialConnect\Model\Facebook\Oauth2\Client $client,
+        \DevGenii\SocialConnect\Model\Facebook\Client $client,
         array $params = [],
         $target = 'me',
 
@@ -108,7 +108,7 @@ class Data extends \Magento\Framework\DataObject
     }
 
     /**
-     * @throws \DevGenii\SocialConnect\Model\Facebook\Oauth2\Exception
+     * @throws \DevGenii\SocialConnect\Model\Facebook\Client\Exception
      * @throws \Exception
      */
     protected function load()
@@ -123,7 +123,7 @@ class Data extends \Magento\Framework\DataObject
             foreach ($response as $key => $value) {
                 $this->setData($key, $value);
             }
-        } catch(\DevGenii\SocialConnect\Model\Facebook\Oauth2\Exception $e) {
+        } catch(\DevGenii\SocialConnect\Model\Facebook\Client\Exception $e) {
             $this->onException($e);
         } catch(\Exception $e) {
             $this->onException($e);

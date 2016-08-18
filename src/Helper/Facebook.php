@@ -4,9 +4,9 @@ namespace DevGenii\SocialConnect\Helper;
 
 class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    const XML_PATH_ENABLED = 'customer/devgenii_socialconnect_facebook/enabled';
-    const XML_PATH_CLIENT_ID = 'customer/devgenii_socialconnect_facebook/client_id';
-    const XML_PATH_CLIENT_SECRET = 'customer/devgenii_socialconnect_facebook/client_secret';
+    const XML_PATH_ENABLED = 'devgenii_socialconnect/facebook/enabled';
+    const XML_PATH_CLIENT_ID = 'devgenii_socialconnect/facebook/client_id';
+    const XML_PATH_CLIENT_SECRET = 'devgenii_socialconnect/facebook/client_secret';
 
     /**
      * @var \Magento\Backend\App\ConfigInterface
@@ -29,11 +29,19 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @return bool
+     */
+    public function isReadyToUse()
+    {
+        return $this->isEnabled() && $this->getClientId() && $this->getClientSecret();
+    }
+
+    /**
      * @return mixed
      */
     protected function isEnabled()
     {
-        return $this->_getStoreConfig(self::XML_PATH_ENABLED);
+        return $this->getStoreConfig(self::XML_PATH_ENABLED);
     }
 
     /**
@@ -41,7 +49,7 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getClientId()
     {
-        return $this->_getStoreConfig(self::XML_PATH_CLIENT_ID);
+        return $this->getStoreConfig(self::XML_PATH_CLIENT_ID);
     }
 
     /**
@@ -49,14 +57,14 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getClientSecret()
     {
-        return $this->_getStoreConfig(self::XML_PATH_CLIENT_SECRET);
+        return $this->getStoreConfig(self::XML_PATH_CLIENT_SECRET);
     }
 
     /**
      * @param $xmlPath
      * @return mixed
      */
-    public function getStoreConfig($xmlPath)
+    protected function getStoreConfig($xmlPath)
     {
         return $this->config->getValue($xmlPath);
     }

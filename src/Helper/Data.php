@@ -2,9 +2,6 @@
 
 namespace DevGenii\SocialConnect\Helper;
 
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**

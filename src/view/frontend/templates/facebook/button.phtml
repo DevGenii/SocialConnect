@@ -1,0 +1,32 @@
+<?php
+/** @var $block \DevGenii\SocialConnect\Block\Facebook\Button */
+?>
+<div class="devgenii-facebook-connect-button">
+    <div id="fb-root"></div>
+    <div class="fb-login-button"
+         data-size="large"
+         data-show-faces="false"
+         data-auto-logout-link="false"
+         data-scope="<?php echo implode(',', $block->getScope()); ?>"
+         data-onlogin="devgenii_socialconnect_signin_callback">
+        <?php echo $block->getButtonText(); ?>
+    </div>
+
+    <script>
+        //<![CDATA[
+        var devgenii_socialconnect = {
+            appid: "<?php echo $block->getAppId(); ?>",
+            state: "<?php echo $block->getState(); ?>",
+            ajaxurl: "<?php echo $block->getAjaxUrl(); ?>"
+        };
+
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        //]]>
+    </script>
+</div>

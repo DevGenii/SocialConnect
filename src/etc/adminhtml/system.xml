@@ -6,14 +6,15 @@
             <label>DevGenii Social Connect</label>
             <tab>customer</tab>
             <resource>Magento_Customer::config_customer</resource>
-            <group id="inchoo_socialconnect_support" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="support" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Support</label>
+                <attribute type="expanded">1</attribute>
                 <field id="professional_support" translate="label" type="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Professional Support</label>
                     <frontend_model>DevGenii\SocialConnect\Block\Adminhtml\System\Config\Form\Link\Support</frontend_model>
                 </field>
             </group>
-            <group id="inchoo_socialconnect_facebook" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="facebook" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Login with Facebook</label>
                 <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>

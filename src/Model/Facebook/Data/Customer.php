@@ -40,7 +40,7 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \DevGenii\SocialConnect\Helper\Data $helper
      * @param \DevGenii\SocialConnect\Helper\Facebook $helperFacebook
-     * @param \DevGenii\SocialConnect\Model\Facebook\Oauth2\Client $client
+     * @param \DevGenii\SocialConnect\Model\Facebook\Client $client
      * @param array $params
      * @param string $target
      * @param array $data
@@ -52,7 +52,7 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
         \DevGenii\SocialConnect\Helper\Facebook $helperFacebook,
 
         // Parent
-        \DevGenii\SocialConnect\Model\Facebook\Oauth2\Client $client,
+        \DevGenii\SocialConnect\Model\Facebook\Client $client,
         array $params = [],
         $target = 'me',
         array $data = array())

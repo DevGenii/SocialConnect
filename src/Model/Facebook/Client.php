@@ -1,6 +1,6 @@
 <?php
 
-namespace DevGenii\SocialConnect\Model\Facebook\Oauth2;
+namespace DevGenii\SocialConnect\Model\Facebook;
 
 class Client extends \Magento\Framework\DataObject
 {
@@ -91,8 +91,8 @@ class Client extends \Magento\Framework\DataObject
             $this->url->getUrl(self::REDIRECT_URI_ROUTE)
         );
         $this->helperData = $helperData;
-        $this->clientId = $this->_getClientId();
-        $this->clientSecret = $this->_getClientSecret();
+        $this->clientId = $this->getClientId();
+        $this->clientSecret = $this->getClientSecret();
 
         parent::__construct($data);
     }
@@ -344,7 +344,7 @@ class Client extends \Magento\Framework\DataObject
                     $message = __('Unspecified OAuth error occurred.');
                 }
 
-                throw new Exception($message);
+                throw new \Exception($message);
             } else {
                 $message = sprintf(
                     __('HTTP error %d occurred while issuing request.'),
