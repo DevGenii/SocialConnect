@@ -13,11 +13,14 @@ class Button extends \Magento\Framework\View\Element\Template
     protected $registry;
 
     /**
-     * Facebook client model
-     *
-     * @var \DevGenii\SocialConnect\Model\Facebook\Client
+     * @var \DevGenii\SocialConnect\Model\Facebook\ConfigInterface
      */
-    protected $clientFacebook;
+    protected $configFacebook;
+
+    /**
+     * @var \DevGenii\SocialConnect\Helper\Data
+     */
+    protected $helper;
 
     /**
      *
@@ -26,15 +29,17 @@ class Button extends \Magento\Framework\View\Element\Template
     protected $customerSession;
 
     /**
-     * @param \DevGenii\SocialConnect\Model\Facebook\Client $clientFacebook
+     * @param \DevGenii\SocialConnect\Model\Facebook\ConfigInterface $configFacebook
      * @param \Magento\Framework\Registry $registry
+     * @param \DevGenii\SocialConnect\Helper\Data $helper
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
      */
     public function __construct(
-        \DevGenii\SocialConnect\Model\Facebook\Client $clientFacebook,
+        \DevGenii\SocialConnect\Model\Facebook\ConfigInterface $configFacebook,
         \Magento\Framework\Registry $registry,
+        \DevGenii\SocialConnect\Helper\Data $helper,
         \Magento\Customer\Model\Session $customerSession,
 
         // Parent
@@ -42,20 +47,12 @@ class Button extends \Magento\Framework\View\Element\Template
         array $data = array())
     {
 
-        $this->clientFacebook = $clientFacebook;
+        $this->configFacebook = $configFacebook;
         $this->registry = $registry;
+        $this->helper = $helper;
         $this->customerSession = $customerSession;
 
         parent::__construct($context, $data);
-    }
-
-    protected function _construct()
-    {
-        parent::_construct();
-
-        // CSRF protection
-        $this->customerSession->setFacebookCsrf($csrf = md5(uniqid(rand(), true)));
-        $this->clientFacebook->setState($csrf);
     }
 
     /**
@@ -84,7 +81,7 @@ class Button extends \Magento\Framework\View\Element\Template
      */
     public function getScope()
     {
-        return $this->clientFacebook->getScope();
+        return $this->configFacebook->getScope();
     }
 
     /**
@@ -92,7 +89,7 @@ class Button extends \Magento\Framework\View\Element\Template
      */
     public function getAppId()
     {
-        return $this->clientFacebook->getClientId();
+        return $this->configFacebook->getClientId();
     }
 
     /**
@@ -100,7 +97,12 @@ class Button extends \Magento\Framework\View\Element\Template
      */
     public function getState()
     {
-        return $this->clientFacebook->getState();
+        // CSRF protection
+        $csrf = $this->helper->generateCsrfToken();
+
+        $this->customerSession->setFacebookCsrf($csrf);
+
+        return $csrf;
     }
 
     /**

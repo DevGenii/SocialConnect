@@ -130,7 +130,6 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
      */
     protected function onException(\Exception $e)
     {
-
         $this->helperFacebook->disconnect($this->customer);
 
         parent::onException($e);

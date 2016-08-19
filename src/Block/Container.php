@@ -5,33 +5,23 @@ namespace DevGenii\SocialConnect\Block;
 abstract class Container extends \Magento\Framework\View\Element\Template
 {
     /**
-     * Facebook client model
-     *
-     * @var \DevGenii\SocialConnect\Model\Facebook\Client
+     * @var \DevGenii\SocialConnect\Model\Facebook\ConfigInterface
      */
-    protected $clientFacebook;
+    protected $configFacebook;
 
     /**
-     * @var \DevGenii\SocialConnect\Helper\Facebook
-     */
-    protected $helperFacebook;
-
-    /**
-     * @param \DevGenii\SocialConnect\Model\Facebook\Client $clientFacebook
-     * @param \DevGenii\SocialConnect\Helper\Facebook $helperFacebook
+     * @param \DevGenii\SocialConnect\Model\Facebook\ConfigInterface $configFacebook
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
      */
     public function __construct(
-        \DevGenii\SocialConnect\Model\Facebook\Client $clientFacebook,
-        \DevGenii\SocialConnect\Helper\Facebook $helperFacebook,
+        \DevGenii\SocialConnect\Model\Facebook\ConfigInterface $configFacebook,
 
         // Parent
         \Magento\Framework\View\Element\Template\Context $context,
         array $data = [])
     {
-        $this->clientFacebook = $clientFacebook;
-        $this->helperFacebook = $helperFacebook;
+        $this->configFacebook = $configFacebook;
 
         parent::__construct($context, $data);
     }
@@ -41,7 +31,6 @@ abstract class Container extends \Magento\Framework\View\Element\Template
      */
     public function facebookEnabled()
     {
-        return $this->helperFacebook->isReadyToUse();
+        return $this->configFacebook->isReadyToUse();
     }
-
 } 

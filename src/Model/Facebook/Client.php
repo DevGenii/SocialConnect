@@ -58,9 +58,7 @@ class Client extends \Magento\Framework\DataObject
      * @var array
      */
     protected $scope = [
-        'public_profile',
-        'email',
-        'user_birthday'
+        'public_profile'
     ];
 
     /**
@@ -68,7 +66,6 @@ class Client extends \Magento\Framework\DataObject
      * @var \StdClass
      */
     protected $token;
-
 
     /**
      *
