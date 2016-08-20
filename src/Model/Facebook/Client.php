@@ -341,7 +341,7 @@ class Client extends \Magento\Framework\DataObject
                     $message = __('Unspecified OAuth error occurred.');
                 }
 
-                throw new \Exception($message);
+                throw new \DevGenii\SocialConnect\Model\Facebook\Client\Exception($message);
             } else {
                 $message = sprintf(
                     __('HTTP error %d occurred while issuing request.'),

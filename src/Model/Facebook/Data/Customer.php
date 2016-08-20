@@ -35,11 +35,19 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
     protected $helperFacebook;
 
     /**
+     * Store manager
+     *
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
      *
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \DevGenii\SocialConnect\Helper\Data $helper
      * @param \DevGenii\SocialConnect\Helper\Facebook $helperFacebook
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \DevGenii\SocialConnect\Model\Facebook\Client $client
      * @param array $params
      * @param string $target
@@ -50,6 +58,7 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
         \Magento\Customer\Model\Session $customerSession,
         \DevGenii\SocialConnect\Helper\Data $helper,
         \DevGenii\SocialConnect\Helper\Facebook $helperFacebook,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
 
         // Parent
         \DevGenii\SocialConnect\Model\Facebook\Client $client,
@@ -61,6 +70,8 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
         $this->customerSession = $customerSession;
         $this->helper = $helper;
         $this->helperFacebook = $helperFacebook;
+        $this->storeManager = $storeManager;
+
         parent::__construct($client, $params, $target, $data);
     }
 
@@ -68,15 +79,18 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
     public function loadByCustomerId($customerId)
     {
         $this->customer = $this->customerRepository->getById($customerId);
-
         if(!$this->customer->getId()) {
             throw new \Exception(
                 __('Could not load by customer id')
             );
         }
 
-        if(!($socialconnectFid = $this->customer->getCustomAttribute('devgenii_socialconnect_fid')) ||
-            !($socialconnectFtoken = $this->customer->getCustomAttribute('devgenii_socialconnect_ftoken'))) {
+        if(!($socialconnectFid = $this->customer->getCustomAttribute(
+            \DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE
+            )) ||
+            !($socialconnectFtoken = $this->customer->getCustomAttribute(
+                \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
+            ))) {
             throw new \Exception(
                 __('Could not retrieve token by customer id')
             );
@@ -110,10 +124,14 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
             );
         }
 
-        if(!($facebookId = $this->customer->getExtensionAttributes()->getDevgeniiSocialconnectFid()) ||
-            !($facebookToken = $this->customer->getExtensionAttributes()->getDevgeniiSocialconnectFtoken())) {
+        if(!($facebookId = $this->customer->getCustomAttribute(
+            \DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE
+            )) ||
+            !($facebookToken = $this->customer->getCustomAttribute(
+                \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
+            ))) {
             throw new \Exception(
-                __('Could not retrieve token by customer id')
+                __('Could not retrieve token for current customer')
             );
         }
 
@@ -130,9 +148,39 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
      */
     protected function onException(\Exception $e)
     {
-        $this->helperFacebook->disconnect($this->customer);
+        $this->disconnect();
 
         parent::onException($e);
     }
-    
+
+    /**
+     * Disconnect customer data customer
+     */
+    public function disconnect()
+    {
+        try {
+            $this->client->setAccessToken(unserialize($this->customer->getCustomAttribute(
+                \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
+                ))
+            );
+            $this->client->api('/me/permissions', 'DELETE');
+        } catch (\Exception $e) {
+            // Best effort attempt to revoke permissions
+        }
+
+        $pictureFilename = $this->storeManager->getStore()->getUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            )
+            .'/devgenii/socialconnect/facebook/'
+            .$this->customer->getCustomAttribute(\DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE);
+
+        if(file_exists($pictureFilename)) {
+            @unlink($pictureFilename);
+        }
+
+        $this->customer->setCustomAttribute(\DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE, null)
+            ->setCustomAttribute(\DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE, null);
+
+        $this->customerRepository->save($this->customer);
+    }
 }

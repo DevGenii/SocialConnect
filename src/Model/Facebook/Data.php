@@ -32,7 +32,7 @@ class Data extends \Magento\Framework\DataObject
     public function __construct(
         \DevGenii\SocialConnect\Model\Facebook\Client $client,
         array $params = [],
-        $target = 'me',
+        $target = '/me',
 
         // Parent
         array $data = [])
@@ -115,7 +115,7 @@ class Data extends \Magento\Framework\DataObject
     {
         try{
             $response = $this->client->api(
-                '/'.$this->target,
+                $this->target,
                 'GET',
                 $this->params
             );

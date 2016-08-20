@@ -65,10 +65,10 @@ class CustomerFactory
             if($customerId) {
                 $instance->loadByCustomerId($customerId);
             } else if($this->customerSession->isLoggedIn()) {
-                $instance->loadSelf();
+                $instance->load();
             } else {
                 throw new \Exception(
-                    'Could not create user info object. Please try again.'
+                    'Could not create customer data object. Please try again.'
                 );
             }
         }
