@@ -35,7 +35,9 @@ define([
                     },
                     dataType: 'json',
                     success: function(data) {
-                        window.location.replace(data.redirect);
+                        if(data && 'Redirect' in data) {
+                            window.location.replace(data.redirect);
+                        }
                     }
                 });
             }

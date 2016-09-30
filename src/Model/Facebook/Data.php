@@ -23,8 +23,8 @@ class Data extends \Magento\Framework\DataObject
     protected $client;
 
     /**
-     *
-     * @param \DevGenii\SocialConnect\Model\Facebook\Client $client
+     * Data constructor.
+     * @param Client $client
      * @param array $params
      * @param string $target
      * @param array $data
@@ -37,6 +37,7 @@ class Data extends \Magento\Framework\DataObject
         // Parent
         array $data = [])
     {
+        // Constructor params
         $this->client = $client;
         $this->params = $params;
         $this->target = $target;

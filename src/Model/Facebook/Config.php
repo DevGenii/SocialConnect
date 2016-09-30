@@ -8,6 +8,11 @@ class Config implements \DevGenii\SocialConnect\Model\Facebook\ConfigInterface
     const XML_PATH_CLIENT_ID = 'devgenii_socialconnect/facebook/client_id';
     const XML_PATH_CLIENT_SECRET = 'devgenii_socialconnect/facebook/client_secret';
 
+    /**
+     * @var \Magento\Framework\Encryption\EncryptorInterface
+     */
+    protected $encryptor;
+
     protected $scope = [
         'public_profile',
         'email',
@@ -24,10 +29,12 @@ class Config implements \DevGenii\SocialConnect\Model\Facebook\ConfigInterface
      * @param \Magento\Backend\App\ConfigInterface $config
      */
     public function __construct(
-        \Magento\Backend\App\ConfigInterface $config
+        \Magento\Backend\App\ConfigInterface $config,
+        \Magento\Framework\Encryption\EncryptorInterface $encryptor
     )
     {
         $this->config = $config;
+        $this->encryptor = $encryptor;
     }
 
     /**
@@ -59,7 +66,7 @@ class Config implements \DevGenii\SocialConnect\Model\Facebook\ConfigInterface
      */
     public function getClientSecret()
     {
-        return $this->getStoreConfig(self::XML_PATH_CLIENT_SECRET);
+        return $this->encryptor->decrypt($this->getStoreConfig(self::XML_PATH_CLIENT_SECRET));
     }
 
     /**

@@ -68,30 +68,61 @@ class Client extends \Magento\Framework\DataObject
     protected $token;
 
     /**
+     * Facebook config model
      *
+     * @var  \DevGenii\SocialConnect\Model\Facebook\Config
+     */
+    protected $config;
+
+    /**
+     * Client constructor.
      * @param \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory
      * @param \Magento\Framework\UrlInterface $url
      * @param \DevGenii\SocialConnect\Helper\Data $helperData
+     * @param Config $config
      * @param array $data
+     * @throws \Exception
      */
     public function __construct(
             \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory,
             \Magento\Framework\UrlInterface $url,
             \DevGenii\SocialConnect\Helper\Data $helperData,
+            \DevGenii\SocialConnect\Model\Facebook\Config $config,
 
             // Parent
             array $data = [])
     {
+        // Are we green to proceed?
+        if(!$config->isReadyToUse()) {
+            throw new \Exception('Facebook client is either not enabled or not configured for use.');
+        }
+
         $this->httpClientFactory = $httpClientFactory;
         $this->url = $url;
         $this->redirectUri = $this->url->sessionUrlVar(
             $this->url->getUrl(self::REDIRECT_URI_ROUTE)
         );
         $this->helperData = $helperData;
-        $this->clientId = $this->getClientId();
-        $this->clientSecret = $this->getClientSecret();
+        $this->setClientId($config->getClientId());
+        $this->setClientSecret($config->getClientSecret());
 
         parent::__construct($data);
+    }
+
+    /**
+     * @param string $clientId
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+    }
+
+    /**
+     * @param $clientSecret
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
     }
 
     /**

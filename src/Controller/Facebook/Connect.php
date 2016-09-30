@@ -109,11 +109,10 @@ class Connect extends \Magento\Framework\App\Action\Action
         // Reload access token in case it got extended
         $token = $data->getAccessToken();
 
-        $customersByFacebookId = $this->helperFacebook->getCustomersById($data->getId());
-
+        $customerByFacebookId = $this->helperFacebook->getCustomerById($data->getId());
         if($this->customerSession->isLoggedIn()) {
             // Logged in user
-            if($customersByFacebookId->getSize()) {
+            if($customerByFacebookId) {
                 // Facebook account already connected to other account - deny
                 $this->messageManager->addNoticeMessage(
                     __('Your Facebook account is already connected to one of our store accounts.')
@@ -123,11 +122,11 @@ class Connect extends \Magento\Framework\App\Action\Action
             }
 
             // Connect from account dashboard - attach
-            $customerId = $this->customerSession->getCustomerId();
-            $this->helperFacebook->connectById(
+            $customer = $this->customerSession->getCustomer()->getDataModel();
+            $this->helperFacebook->connectByCustomer(
                 $data->getId(),
                 $token,
-                $customerId
+                $customer
             );
 
             $this->messageManager->addSuccessMessage(
@@ -138,12 +137,10 @@ class Connect extends \Magento\Framework\App\Action\Action
             return $this;
         }
 
-        if($customersByFacebookId->getSize()) {
+        if($customerByFacebookId && $customerByFacebookId->getId()) {
             // Existing connected user - login
-            $customer = $customersByFacebookId->getFirstItem();
-            /* @var $customer \Magento\Customer\Model\Customer */
-
-            $this->helperData->loginByCustomer($customer);
+            /* @var \Magento\Customer\Model\Customer $customer */
+            $this->customerSession->setCustomerAsLoggedIn($customerByFacebookId);
 
             $this->messageManager->addSuccessMessage(
                 __('You have successfully logged in using your Facebook account.')
@@ -152,15 +149,18 @@ class Connect extends \Magento\Framework\App\Action\Action
             return $this;
         }
 
-        $customersByEmail = $this->helperData->getCustomersByEmail($data->getEmail());
-        if($customersByEmail->getSize()) {
+        $customerByEmail = $this->helperData->getCustomerByEmail($data->getEmail());
+        if($customerByEmail && $customerByEmail->getId()) {
             // Email account already exists - attach, login
-            $customerId = $customersByEmail->getFirstItem()->getId();
-            $this->helperFacebook->connectById(
+            $customer = $customerByEmail->getDataModel();
+            $this->helperFacebook->connectByCustomer(
                 $data->getId(),
                 $token,
-                $customerId
+                $customer
             );
+
+            // Log customer in
+            $this->customerSession->setCustomerAsLoggedIn($customer);
 
             $this->messageManager->addSuccessMessage(
                 __('We have discovered you already have account at our store. Your Facebook account is now connected '.
@@ -194,8 +194,9 @@ class Connect extends \Magento\Framework\App\Action\Action
         );
 
         $this->messageManager->addSuccessMessage(
-            __('Your Facebook account is now connected to your new user account at our store. Now you can login using '.
-                'our Facebook Login button or using store account credentials you will receive to your email address.')
+            __('Your Facebook account is now connected to your new customer account at our store. Now you can login using '.
+                'our Facebook Login button and optionally set a password on your customer account using link you will '.
+                'receive to your email shortly.')
         );
     }
 }

@@ -85,19 +85,22 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
             );
         }
 
-        if(!($socialconnectFid = $this->customer->getCustomAttribute(
+        $socialConnectFid = $this->customer->getCustomAttribute(
             \DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE
-            )) ||
-            !($socialconnectFtoken = $this->customer->getCustomAttribute(
-                \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
-            ))) {
+        )->getValue();
+
+        $socialConnectFtoken = $this->customer->getCustomAttribute(
+            \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
+        )->getValue();
+
+        if(!$socialConnectFid|| !$socialConnectFtoken) {
             throw new \Exception(
                 __('Could not retrieve token by customer id')
             );
         }
 
-        $this->setTarget($socialconnectFid);
-        $this->setAccessToken($socialconnectFtoken);
+        $this->setTarget($socialConnectFid);
+        $this->setAccessToken($socialConnectFtoken);
         $this->load();
 
         return $this;

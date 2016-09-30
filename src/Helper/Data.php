@@ -2,6 +2,8 @@
 
 namespace DevGenii\SocialConnect\Helper;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
@@ -15,14 +17,73 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $random;
 
     /**
+     *
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     */
+    protected $customerRepository;
+
+    /**
+     * @var \Magento\Customer\Api\Data\CustomerInterfaceFactory
+     */
+    protected $customerFactory;
+
+    /**
+     * @var \Magento\Framework\Api\DataObjectHelper
+     */
+    protected $dataObjectHelper;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
+     * @var \Magento\Customer\Api\GroupManagementInterface
+     */
+    protected $customerGroupManagement;
+
+    /** @var \Magento\Customer\Api\AccountManagementInterface */
+    protected $accountManagement;
+
+    /**
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory
+     */
+    protected $writeFactory;
+
+    /**
+     * @var \Magento\Framework\Image\Factory
+     */
+    protected $imageFactory;
+
+    /**
+     * Data constructor.
      * @param \Magento\Framework\App\State $appState
      * @param \Magento\Framework\Math\Random $random
-     *
-     * * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerFactory
+     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Customer\Api\GroupManagementInterface $customerGroupManagement
+     * @param \Magento\Customer\Api\AccountManagementInterface $accountManagement
+     * @param \Magento\Framework\App\Helper\Context $context
      */
     public function __construct(
         \Magento\Framework\App\State $appState,
         \Magento\Framework\Math\Random $random,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+        \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerFactory,
+        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Customer\Api\GroupManagementInterface $customerGroupManagement,
+        \Magento\Customer\Api\AccountManagementInterface $accountManagement,
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
+        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
+        \Magento\Framework\Image\Factory $imageFactory,
 
         // Parent
         \Magento\Framework\App\Helper\Context $context
@@ -30,6 +91,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $this->_appState = $appState;
         $this->random = $random;
+        $this->customerRepository = $customerRepository;
+        $this->customerFactory = $customerFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->storeManager = $storeManager;
+        $this->customerGroupManagement = $customerGroupManagement;
+        $this->accountManagement = $accountManagement;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->writeFactory = $writeFactory;
+        $this->imageFactory = $imageFactory;
+
+        // Parent
         parent::__construct($context);
     }
 
@@ -37,10 +109,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param $message
      * @param int $level
      */
-    public function log($message, $level = \Zend_Log::DEBUG)
+    public function log($message, $level = \Monolog\Logger::DEBUG)
     {
         if($this->_appState->getMode() == \Magento\Framework\App\State::MODE_DEVELOPER) {
-            $this->_logger->log($message, $level);
+            // Notice the order of arguments
+            $this->_logger->log($level, $message);
         }
     }
 
@@ -57,52 +130,25 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param $id
      * @param \stdClass $token
-     * @param $customerId
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @param $idAttribute
      * @param $tokenAttribute
+     * @throws \Exception
      */
-    public function connectById(
+    public function connectByCustomer(
         $id,
         \stdClass $token,
-        $customerId,
+        \Magento\Customer\Api\Data\CustomerInterface $customer,
         $idAttribute,
         $tokenAttribute
     )
     {
-        $customerDetailsObject = $this->_customerAccountService->getCustomerDetails($customerId);
-        /* @var $customerDetailsObject \Magento\Customer\Service\V1\Data\CustomerDetails */
+        $customer->setCustomAttributes([
+            $idAttribute => $id,
+            $tokenAttribute => serialize($token)
+        ]);
 
-        $customerDataObject = $customerDetailsObject->getCustomer();
-        /* @var $customerDetailsObject \Magento\Customer\Service\V1\Data\Customer */
-
-        // Merge old and new data
-        $customerDetailsArray = array_merge(
-            $customerDataObject->__toArray(),
-            array('custom_attributes' =>
-                array(
-                    array(
-                        \Magento\Framework\Service\Data\AttributeValue::ATTRIBUTE_CODE => 'inchoo_socialconnect_fid',
-                        \Magento\Framework\Service\Data\AttributeValue::VALUE => $facebookId
-                    ),
-                    array(
-                        \Magento\Framework\Service\Data\AttributeValue::ATTRIBUTE_CODE => 'inchoo_socialconnect_ftoken',
-                        \Magento\Framework\Service\Data\AttributeValue::VALUE => serialize($token)
-                    )
-                )
-            )
-        );
-
-        // Pass result to customerBuilder
-        $this->_customerBuilder->populateWithArray($customerDetailsArray);
-
-        // Pass result to customerDetailsBuilder
-        $this->_customerDetailsBuilder->setCustomer($this->_customerBuilder->create());
-
-        // Update customer
-        $this->_customerAccountService->updateCustomer($customerId, $this->_customerDetailsBuilder->create());
-
-        // Set customer as logged in
-        $this->_customerSession->setCustomerDataAsLoggedIn($customerDataObject);
+        $this->customerRepository->save($customer);
     }
 
     /**
@@ -113,6 +159,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param $lastName
      * @param $idAttribute
      * @param $tokenAttribute
+     * @return \Magento\Customer\Api\Data\CustomerInterface
+     * @throws \Exception
      */
     public function connectByCreatingAccount(
         $id,
@@ -124,145 +172,87 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $tokenAttribute
     )
     {
-        $customerDetails = array(
+        $store = $this->storeManager->getStore();
+
+        $customerData = array(
             'firstname' => $firstName,
             'lastname' => $lastName,
             'email' => $email,
-            'sendemail' => 0,
-            'confirmation' => 0,
-            'custom_attributes' => array(
-                array(
-                    \Magento\Framework\Service\Data\AttributeValue::ATTRIBUTE_CODE => 'inchoo_socialconnect_fid',
-                    \Magento\Framework\Service\Data\AttributeValue::VALUE => $facebookId
-                ),
-                array(
-                    \Magento\Framework\Service\Data\AttributeValue::ATTRIBUTE_CODE => 'inchoo_socialconnect_ftoken',
-                    \Magento\Framework\Service\Data\AttributeValue::VALUE => serialize($token)
-                )
-            )
+            'sendemail_store_id' => $store->getId(),
+            'sendemail' => '1',
+            'custom_attributes' => [
+                [
+                    \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => $idAttribute,
+                    \Magento\Framework\Api\AttributeInterface::VALUE => $id
+                ],
+                [
+                    \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => $tokenAttribute,
+                    \Magento\Framework\Api\AttributeInterface::VALUE => serialize($token)
+                ],
+            ]
         );
 
-        $customer = $this->_customerBuilder->populateWithArray($customerDetails)
-            ->create();
+        /** @var \Magento\Customer\Api\Data\CustomerInterface $customer */
+        $customerDataObject = $this->customerFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $customerDataObject,
+            $customerData,
+            '\Magento\Customer\Api\Data\CustomerInterface'
+        );
 
-        // Save customer
-        $customerDetails = $this->_customerDetailsBuilder->setCustomer($customer)
-            ->setAddresses(null)
-            ->create();
+        $customerDataObject->setGroupId(
+            $this->customerGroupManagement->getDefaultGroup($store->getId())->getId()
+        );
 
-        $customerDataObject = $this->_customerAccountService->createCustomer($customerDetails);
-        /* @var $customer \Magento\Customer\Service\V1\Data\Customer */
+        $customerDataObject->setWebsiteId($store->getWebsiteId());
+        $customerDataObject->setStoreId($store->getId());
+        $customerDataObject->setAddresses(null);
 
-        // Convert data object to customer model
-        $customer = $this->_converter->createCustomerModel($customerDataObject);
-        /* @var $customer \Magento\Customer\Model\Customer */
+        $password = null;
+        $redirectUrl = '';
 
-        $customer->sendNewAccountEmail('confirmed', '');
+        $customer = $this->accountManagement
+            ->createAccount($customerDataObject, $password, $redirectUrl);
 
-        $this->_customerSession->setCustomerAsLoggedIn($customer);
-    }
+        $this->_eventManager->dispatch(
+            'customer_register_success',
+            ['account_controller' => null, 'customer' => $customer]
+        );
 
-    public function loginByCustomer(
-        \Magento\Customer\Model\Customer $customer
-    )
-    {
-        if($customer->getConfirmation()) {
-            $customer->setConfirmation(null);
-            $customer->save();
-        }
-
-        $this->_customerSession->setCustomerAsLoggedIn($customer);
-    }
-
-    public function getCustomersById(
-        $id,
-        $idAttribute
-    )
-    {
-        $customer = $this->_customerFactory->create();
-
-        $collection = $customer->getResourceCollection()
-            ->addAttributeToSelect('*')
-            ->addAttributeToFilter('inchoo_socialconnect_fid', $facebookId)
-            ->setPage(1, 1);
-
-        return $collection;
-    }
-
-    public function getCustomersByEmail($email)
-    {
-        $customer = $this->_customerFactory->create();
-
-        $collection = $customer->getResourceCollection()
-            ->addAttributeToSelect('*')
-            ->addAttributeToFilter('email', $email)
-            ->setPage(1, 1);
-
-        return $collection;
-    }
-
-    public function getProperDimensionsPictureUrl(
-        $id,
-        $pictureUrl,
-        $idAttribute
-    )
-    {
-        $url = $this->_storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ).'/inchoo/socialconnect/facebook/'.$facebookId;
-
-        $filename = $this->_storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ).$facebookId;
-
-        $directory = dirname($filename);
-
-        if (!file_exists($directory) || !is_dir($directory)) {
-            if (!@mkdir($directory, 0777, true))
-                return null;
-        }
-
-        if(!file_exists($filename) ||
-            (file_exists($filename) && (time() - filemtime($filename) >= 3600))) {
-            $client = $this->_httpClientFactory->create($pictureUrl);
-            $client->setStream();
-            $response = $client->request('GET');
-            stream_copy_to_stream($response->getStream(), fopen($filename, 'w'));
-
-            $imageObj = $this->_imageFactory->create($filename);
-            $imageObj->constrainOnly(true);
-            $imageObj->keepAspectRatio(true);
-            $imageObj->keepFrame(false);
-            $imageObj->resize(150, 150);
-            $imageObj->save($filename);
-        }
-
-        return $url;
+        return $customer;
     }
 
     /**
-     * @param \Magento\Customer\Model\Customer $customer
+     * @param $id
+     * @param $idAttribute
+     * @return \Magento\Customer\Api\Data\CustomerInterface|null
      */
-    public function disconnect(\Magento\Customer\Model\Customer $customer, $idAttribute)
+    public function getCustomerById(
+        $id,
+        $idAttribute
+    )
     {
-        // TODO: Move to \Inchoo\SocialConnect\Model\Facebook\Info\User
-        try {
-            $this->_client->setAccessToken(unserialize($customer->getInchooSocialconnectFtoken()));
-            $this->_client->api('/me/permissions', 'DELETE');
-        } catch (Exception $e) {}
+        $searchCriteria = $this->searchCriteriaBuilder->addFilter(
+            $idAttribute,
+            $id,
+            'eq'
+        )->create();
 
-        $pictureFilename = $this->_storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            )
-            .'/inchoo/socialconnect/facebook/'
-            .$customer->getInchooSocialconnectFid();
+        $result = $this->customerRepository->getList($searchCriteria);
 
-        if(file_exists($pictureFilename)) {
-            @unlink($pictureFilename);
+        if($result->getTotalCount()) {
+            return $result->getItems()[0];
         }
 
-        $customer->setInchooSocialconnectFid(null)
-            ->setInchooSocialconnectFtoken(null)
-            ->save();
+        return null;
+    }
+
+    /**
+     * @param $email
+     * @return \Magento\Customer\Api\Data\CustomerInterface
+     */
+    public function getCustomersByEmail($email)
+    {
+        return $this->customerRepository->get($email);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DevGenii\SocialConnect\Helper;
 
-class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
+class Facebook extends \Magento\Framework\App\Helper\AbstractHelper implements ProviderInterface
 {
     const ID_ATTRIBUTE = 'devgenii_socialconnect_fid';
     const TOKEN_ATTRIBUTE = 'devgenii_socialconnect_ftoken';
@@ -28,20 +28,20 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $facebookId
-     * @param \stdClass $facebookToken
-     * @param $customerId
+     * @param $id
+     * @param \stdClass $token
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      */
-    public function connectById(
-        $facebookId,
-        \stdClass $facebookToken,
-        $customerId
+    public function connectByCustomer(
+        $id,
+        \stdClass $token,
+        $customer
     )
     {
-        return $this->dataHelper->connectById(
-            $facebookId,
-            $facebookToken,
-            $customerId,
+        return $this->dataHelper->connectByCustomer(
+            $id,
+            $token,
+            $customer,
             self::ID_ATTRIBUTE,
             self::TOKEN_ATTRIBUTE
         );
@@ -75,31 +75,14 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param $id
-     * @return mixed
+     * @return \Magento\Customer\Api\Data\CustomerInterface|null
      */
-    public function getCustomersById(
+    public function getCustomerById(
         $id
     )
     {
-        return $this->dataHelper->getCustomersById(
+        return $this->dataHelper->getCustomerById(
             $id,
-            self::ID_ATTRIBUTE
-        );
-    }
-
-    /**
-     * @param $id
-     * @param $pictureUrl
-     * @return null|string
-     */
-    public function getProperDimensionsPictureUrl(
-        $id,
-        $pictureUrl
-    )
-    {
-        return $this->dataHelper->getProperDimensionsPictureUrl(
-            $id,
-            $pictureUrl,
             self::ID_ATTRIBUTE
         );
     }
