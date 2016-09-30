@@ -35,7 +35,7 @@ define([
                     },
                     dataType: 'json',
                     success: function(data) {
-                        if(data && 'Redirect' in data) {
+                        if(data && 'redirect' in data) {
                             window.location.replace(data.redirect);
                         }
                     }

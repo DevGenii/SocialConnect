@@ -249,10 +249,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param $email
-     * @return \Magento\Customer\Api\Data\CustomerInterface
+     * @return bool|\Magento\Customer\Api\Data\CustomerInterface
      */
-    public function getCustomersByEmail($email)
+    public function getCustomerByEmail($email)
     {
-        return $this->customerRepository->get($email);
+        try {
+            $this->customerRepository->get($email);
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            return null;
+        }
     }
 }

@@ -8,7 +8,11 @@ class Data extends \Magento\Framework\DataObject
      *
      * @var array
      */
-    protected $params;
+    protected $params = [
+        'first_name',
+        'last_name',
+        'email'
+    ];
 
     /**
      * @var string
@@ -39,7 +43,7 @@ class Data extends \Magento\Framework\DataObject
     {
         // Constructor params
         $this->client = $client;
-        $this->params = $params;
+        $this->params += $params;
         $this->target = $target;
 
         parent::__construct($data);

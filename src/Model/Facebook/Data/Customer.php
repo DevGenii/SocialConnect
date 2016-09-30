@@ -64,7 +64,7 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
         \DevGenii\SocialConnect\Model\Facebook\Client $client,
         array $params = [],
         $target = 'me',
-        array $data = array())
+        array $data = [])
     {
         $this->customerRepository = $customerRepository;
         $this->customerSession = $customerSession;

@@ -139,7 +139,8 @@ class Connect extends \Magento\Framework\App\Action\Action
 
         if($customerByFacebookId && $customerByFacebookId->getId()) {
             // Existing connected user - login
-            /* @var \Magento\Customer\Model\Customer $customer */
+            $customerByFacebookIdModel = $customerByFacebookId->getDa
+
             $this->customerSession->setCustomerAsLoggedIn($customerByFacebookId);
 
             $this->messageManager->addSuccessMessage(
@@ -171,6 +172,14 @@ class Connect extends \Magento\Framework\App\Action\Action
         }
 
         // New connection - create, attach, login
+
+        $email = $data->getEmail();
+        if(!$email) {
+            throw new \Exception(
+                __('Sorry, could not retrieve your Facebook last name. Please try again.')
+            );
+        }
+
         $firstName = $data->getFirstName();
         if(!$firstName) {
             throw new \Exception(
@@ -188,9 +197,9 @@ class Connect extends \Magento\Framework\App\Action\Action
         $this->helperFacebook->connectByCreatingAccount(
             $data->getId(),
             $token,
-            $data->getEmail(),
-            $data->getFirstName(),
-            $data->getLastName()
+            $email,
+            $firstName,
+            $lastName
         );
 
         $this->messageManager->addSuccessMessage(
