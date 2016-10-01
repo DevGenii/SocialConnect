@@ -46,6 +46,7 @@ class Connect extends \Magento\Framework\App\Action\Action
         \DevGenii\SocialConnect\Helper\Facebook $helperFacebook,
         \DevGenii\SocialConnect\Helper\Data $helperData,
         \DevGenii\SocialConnect\Model\Facebook\DataFactory $dataFactory,
+        \Magento\Customer\Model\CustomerFactory $customerFactory,
         AccountRedirect $accountRedirect,
 
         // Parent
@@ -109,10 +110,11 @@ class Connect extends \Magento\Framework\App\Action\Action
         // Reload access token in case it got extended
         $token = $data->getAccessToken();
 
-        $customerByFacebookId = $this->helperFacebook->getCustomerById($data->getId());
+        /** @var \Magento\Customer\Api\Data\CustomerInterface $customerDataByFacebookId */
+        $customerDataByFacebookId = $this->helperFacebook->getCustomerById($data->getId());
         if($this->customerSession->isLoggedIn()) {
             // Logged in user
-            if($customerByFacebookId) {
+            if($customerDataByFacebookId) {
                 // Facebook account already connected to other account - deny
                 $this->messageManager->addNoticeMessage(
                     __('Your Facebook account is already connected to one of our store accounts.')
@@ -137,11 +139,9 @@ class Connect extends \Magento\Framework\App\Action\Action
             return $this;
         }
 
-        if($customerByFacebookId && $customerByFacebookId->getId()) {
+        if($customerDataByFacebookId && $customerDataByFacebookId->getId()) {
             // Existing connected user - login
-            $customerByFacebookIdModel = $customerByFacebookId->getDa
-
-            $this->customerSession->setCustomerAsLoggedIn($customerByFacebookId);
+            $this->customerSession->setCustomerDataAsLoggedIn($customerDataByFacebookId);
 
             $this->messageManager->addSuccessMessage(
                 __('You have successfully logged in using your Facebook account.')
