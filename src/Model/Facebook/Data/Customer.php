@@ -120,7 +120,8 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
             );
         }
 
-        $this->customer = $this->customerSession->getCustomer();
+        /** @var \Magento\Customer\Api\Data\CustomerInterface  $customer */
+        $this->customer = $this->customerSession->getCustomer()->getDataModel();
         if(!$this->customer->getId()) {
             throw new \Exception(
                 __('Could not load by customer id')

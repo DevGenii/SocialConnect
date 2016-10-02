@@ -4,7 +4,12 @@
     <update handle="customer_account"/>
     <body>
         <referenceContainer name="content">
-
+            <block class="DevGenii\SocialConnect\Block\Facebook\Account" name="devgenii_socialconnect.account.facebook"
+                   template="DevGenii_SocialConnect::facebook\account.phtml" cacheable="false">
+                <block class="DevGenii\SocialConnect\Block\Facebook\Button"
+                       name="devgenii_socialconnect.account.facebook.button" template="DevGenii_SocialConnect::facebook/button.phtml" cacheable="false">
+                </block>
+            </block>
         </referenceContainer>
     </body>
 </page>

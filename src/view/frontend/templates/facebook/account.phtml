@@ -1,0 +1,10 @@
+<?php
+/** @var $block \DevGenii\SocialConnect\Block\Facebook\Account */
+?>
+<?php if($block->isConnected()): ?>
+    <?= __('Here you can disconnect your store account from your Facebook account.') ?>
+<?php else: ?>
+    <?= __('Here you can connect your store account with your Facebook account making it easier for you to login in the future.') ?>
+<?php endif; ?>
+
+<?= $block->getChildChildHtml('devgenii_socialconnect.account.facebook.button') ?>

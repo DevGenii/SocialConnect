@@ -68,7 +68,7 @@ class CustomerFactory
                 $instance->load();
             } else {
                 throw new \Exception(
-                    'Could not create customer data object. Please try again.'
+                    'Could not create customer data object.'
                 );
             }
         }

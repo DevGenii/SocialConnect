@@ -8,17 +8,17 @@
          data-autologoutlink="true"
          data-show-faces="false"
          data-auto-logout-link="false"
-         data-scope="<?php echo implode(',', $block->getScope()); ?>">
-        <?php echo $block->getButtonText(); ?>
+         data-scope="<?= implode(',', $block->getScope()); ?>">
+        <?= $block->getButtonText(); ?>
     </div>
 
     <script type="text/x-magento-init">
     {
         "*": {
             "DevGenii_SocialConnect/facebook/button": {
-                "appId": "<?php echo $block->getAppId(); ?>",
-                "state": "<?php echo $block->getState(); ?>",
-                "ajaxUrl" :"<?php echo $block->getAjaxUrl(); ?>"
+                "appId": "<?= $block->getAppId(); ?>",
+                "state": "<?= $block->getState(); ?>",
+                "ajaxUrl" :"<?= $block->getAjaxUrl(); ?>"
             }
         }
     }

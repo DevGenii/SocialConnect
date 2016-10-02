@@ -4,7 +4,6 @@ namespace DevGenii\SocialConnect\Block\Facebook;
 
 class Button extends \Magento\Framework\View\Element\Template
 {
-
     const AJAX_ROUTE = 'socialconnect/facebook/connect';
 
     /**
@@ -60,10 +59,10 @@ class Button extends \Magento\Framework\View\Element\Template
      */
     public function getButtonText()
     {
-        // Get user info for currently logged in user if it already exists
-        $data = $this->registry->registry('devgenii_socialconnect_data');
+        /** @var \DevGenii\SocialConnect\Model\Facebook\Data\Customer|null $data */
+        $data = $this->registry->registry('devgenii_socialconnect_facebook_data');
 
-        if (is_null($data) || !$data->hasData()) {
+        if (is_null($data)) {
             // No user info, see if we have something set through layout
             if (!($text = $this->getData('button_text'))) {
                 // "Connect" is fallback used when text isn't set through layout
