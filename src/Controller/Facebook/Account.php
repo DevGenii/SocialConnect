@@ -53,7 +53,7 @@ class Account extends \Magento\Framework\App\Action\Action
 
             // Current user data to be used by the blocks on the page
             $this->registry->register('devgenii_socialconnect_facebook_data', $data);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Not connected or connected but not valid
         }
 

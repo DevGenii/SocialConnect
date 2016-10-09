@@ -19,7 +19,7 @@ class Account extends \Magento\Framework\View\Element\Template
 
         // Parent
         \Magento\Framework\View\Element\Template\Context $context,
-        array $data = array())
+        array $data = [])
     {
 
         $this->registry = $registry;

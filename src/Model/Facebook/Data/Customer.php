@@ -63,7 +63,7 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
         // Parent
         \DevGenii\SocialConnect\Model\Facebook\Client $client,
         array $params = [],
-        $target = 'me',
+        $target = '/me',
         array $data = [])
     {
         $this->customerRepository = $customerRepository;
@@ -128,12 +128,17 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
             );
         }
 
-        if(!($facebookId = $this->customer->getCustomAttribute(
-            \DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE
+        if(
+            !($facebookId = $this->customer->getCustomAttribute(
+                \DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE
             )) ||
+            !($facebookId = $facebookId->getValue()) ||
             !($facebookToken = $this->customer->getCustomAttribute(
                 \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
-            ))) {
+            )) ||
+            !($facebookToken = $facebookToken->getValue()) ||
+            !($facebookToken = unserialize($facebookToken))
+        ) {
             throw new \Exception(
                 __('Could not retrieve token for current customer')
             );
@@ -165,26 +170,13 @@ class Customer extends \DevGenii\SocialConnect\Model\Facebook\Data
         try {
             $this->client->setAccessToken(unserialize($this->customer->getCustomAttribute(
                 \DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE
-                ))
+                )->getValue())
             );
             $this->client->api('/me/permissions', 'DELETE');
         } catch (\Exception $e) {
             // Best effort attempt to revoke permissions
         }
 
-        $pictureFilename = $this->storeManager->getStore()->getUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            )
-            .'/devgenii/socialconnect/facebook/'
-            .$this->customer->getCustomAttribute(\DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE);
-
-        if(file_exists($pictureFilename)) {
-            @unlink($pictureFilename);
-        }
-
-        $this->customer->setCustomAttribute(\DevGenii\SocialConnect\Helper\Facebook::ID_ATTRIBUTE, null)
-            ->setCustomAttribute(\DevGenii\SocialConnect\Helper\Facebook::TOKEN_ATTRIBUTE, null);
-
-        $this->customerRepository->save($this->customer);
+        $this->helperFacebook->disconnectByCustomer($this->customer);
     }
 }

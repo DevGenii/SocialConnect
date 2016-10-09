@@ -71,6 +71,8 @@ class CustomerFactory
                     'Could not create customer data object.'
                 );
             }
+
+            $this->instance[$customerId] = $instance;
         }
 
         // Currently logged in user info under 0 key

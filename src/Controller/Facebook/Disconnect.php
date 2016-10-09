@@ -65,16 +65,15 @@ class Disconnect extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        $return = array(
+        $return = [
             'redirect' => $this->accountRedirect->getRedirect()
-        );
+        ];
 
         echo json_encode($return);
     }
 
-    protected function disconnectCallback(\Magento\Customer\Model\Customer $customer) {
+    protected function disconnectCallback() {
         $customerData = $this->customerDataFactory->create();
-        $customerData->load();
         $customerData->disconnect();
 
         $this->messageManager->addSuccessMessage(

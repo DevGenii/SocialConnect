@@ -75,9 +75,9 @@ class Connect extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        $return = array(
+        $return = [
             'redirect' => $this->accountRedirect->getRedirect()
-        );
+        ];
 
         echo json_encode($return);
     }
@@ -90,7 +90,8 @@ class Connect extends \Magento\Framework\App\Action\Action
         $accessToken = $this->getRequest()->getParam('access_token');
         $expiresIn = $this->getRequest()->getParam('expires_in');
 
-        if( !$expiresIn ||
+        if(
+            !$expiresIn ||
             !$accessToken ||
             !$state ||
             $state != $this->customerSession->getFacebookCsrf()) {
@@ -110,10 +111,10 @@ class Connect extends \Magento\Framework\App\Action\Action
         // Reload access token in case it got extended
         $token = $data->getAccessToken();
 
+        // #1 - Handle logged in customers when they are attempting to connect from account dashboard
         /** @var \Magento\Customer\Api\Data\CustomerInterface $customerDataByFacebookId */
         $customerDataByFacebookId = $this->helperFacebook->getCustomerById($data->getId());
         if($this->customerSession->isLoggedIn()) {
-            // Logged in user
             if($customerDataByFacebookId) {
                 // Facebook account already connected to other account - deny
                 $this->messageManager->addNoticeMessage(
@@ -124,11 +125,11 @@ class Connect extends \Magento\Framework\App\Action\Action
             }
 
             // Connect from account dashboard - attach
-            $customer = $this->customerSession->getCustomer()->getDataModel();
+            $customerData = $this->customerSession->getCustomer()->getDataModel();
             $this->helperFacebook->connectByCustomer(
                 $data->getId(),
                 $token,
-                $customer
+                $customerData
             );
 
             $this->messageManager->addSuccessMessage(
@@ -139,8 +140,9 @@ class Connect extends \Magento\Framework\App\Action\Action
             return $this;
         }
 
+        // #2 - Handle already connected customers when they are attempting to login/register on frontend
         if($customerDataByFacebookId && $customerDataByFacebookId->getId()) {
-            // Existing connected user - login
+            // Log customer in
             $this->customerSession->setCustomerDataAsLoggedIn($customerDataByFacebookId);
 
             $this->messageManager->addSuccessMessage(
@@ -150,9 +152,9 @@ class Connect extends \Magento\Framework\App\Action\Action
             return $this;
         }
 
+        // #3 - Handle users attempting to login/register if Magento customer account with their email already exists
         $customerByEmail = $this->helperData->getCustomerByEmail($data->getEmail());
         if($customerByEmail && $customerByEmail->getId()) {
-            // Email account already exists - attach, login
             $customer = $customerByEmail->getDataModel();
             $this->helperFacebook->connectByCustomer(
                 $data->getId(),
@@ -161,7 +163,7 @@ class Connect extends \Magento\Framework\App\Action\Action
             );
 
             // Log customer in
-            $this->customerSession->setCustomerAsLoggedIn($customer);
+            $this->customerSession->setCustomerDataAsLoggedIn($customer);
 
             $this->messageManager->addSuccessMessage(
                 __('We have discovered you already have account at our store. Your Facebook account is now connected '.
@@ -171,36 +173,38 @@ class Connect extends \Magento\Framework\App\Action\Action
             return $this;
         }
 
-        // New connection - create, attach, login
-
+        #4 - Handle new users attempting to login/register by creating new Magento customer account
         $email = $data->getEmail();
         if(!$email) {
             throw new \Exception(
-                __('Sorry, could not retrieve your Facebook last name. Please try again.')
+                __('Sorry, could not retrieve your email from Facebook. Please try again.')
             );
         }
 
         $firstName = $data->getFirstName();
         if(!$firstName) {
             throw new \Exception(
-                __('Sorry, could not retrieve your Facebook first name. Please try again.')
+                __('Sorry, could not retrieve your first name from Facebook. Please try again.')
             );
         }
 
         $lastName = $data->getLastName();
         if(!$lastName) {
             throw new \Exception(
-                __('Sorry, could not retrieve your Facebook last name. Please try again.')
+                __('Sorry, could not retrieve your last name from Facebook. Please try again.')
             );
         }
 
-        $this->helperFacebook->connectByCreatingAccount(
+        $customerData = $this->helperFacebook->connectByCreatingAccount(
             $data->getId(),
             $token,
             $email,
             $firstName,
             $lastName
         );
+
+        // Log customer in
+        $this->customerSession->setCustomerDataAsLoggedIn($customerData);
 
         $this->messageManager->addSuccessMessage(
             __('Your Facebook account is now connected to your new customer account at our store. Now you can login using '.

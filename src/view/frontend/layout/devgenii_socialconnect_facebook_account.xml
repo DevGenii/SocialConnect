@@ -5,10 +5,10 @@
     <body>
         <referenceContainer name="content">
             <block class="DevGenii\SocialConnect\Block\Facebook\Account" name="devgenii_socialconnect.account.facebook"
-                   template="DevGenii_SocialConnect::facebook\account.phtml" cacheable="false">
+                   template="DevGenii_SocialConnect::facebook/account.phtml" cacheable="false">
                 <block class="DevGenii\SocialConnect\Block\Facebook\Button"
-                       name="devgenii_socialconnect.account.facebook.button" template="DevGenii_SocialConnect::facebook/button.phtml" cacheable="false">
-                </block>
+                       name="devgenii_socialconnect.account.facebook.button" template="DevGenii_SocialConnect::facebook/button.phtml"
+                       cacheable="false"/>
             </block>
         </referenceContainer>
     </body>

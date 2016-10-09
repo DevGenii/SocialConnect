@@ -53,6 +53,7 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper implements P
      * @param $email
      * @param $firstName
      * @param $lastName
+     * @return \Magento\Customer\Api\Data\CustomerInterface
      */
     public function connectByCreatingAccount(
         $facebookId,
@@ -62,7 +63,7 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper implements P
         $lastName
     )
     {
-        $this->dataHelper->connectByCreatingAccount(
+        return $this->dataHelper->connectByCreatingAccount(
             $facebookId,
             $token,
             $email,
@@ -84,6 +85,20 @@ class Facebook extends \Magento\Framework\App\Helper\AbstractHelper implements P
         return $this->dataHelper->getCustomerById(
             $id,
             self::ID_ATTRIBUTE
+        );
+    }
+
+    /**
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     */
+    public function disconnectByCustomer(
+        $customer
+    )
+    {
+        return $this->dataHelper->disconnectByCustomer(
+            $customer,
+            self::ID_ATTRIBUTE,
+            self::TOKEN_ATTRIBUTE
         );
     }
 }

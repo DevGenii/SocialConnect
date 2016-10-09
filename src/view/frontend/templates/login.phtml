@@ -4,9 +4,9 @@
 <div class="devgenii-socialconnect-container devgenii-socialconnect-container-login">
     <?php if($block->facebookEnabled()): ?>
     <div class="devgenii-socialconnect-login-facebook">
-        <h3><?php echo __('Facebook Connect') ?></h3>
-        <p><?php echo __('You can login using your <strong>Facebook</strong> account.') ?></p>
-        <?php echo $block->getChildHtml('devgenii_socialconnect.login.facebook.button'); ?>
+        <h3><?= __('Facebook Connect') ?></h3>
+        <p><?= __('You can login using your <strong>Facebook</strong> account.') ?></p>
+        <?= $block->getChildHtml('devgenii_socialconnect.login.facebook.button'); ?>
     </div>
     <?php endif; ?>
 </div>

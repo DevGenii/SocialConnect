@@ -2,8 +2,6 @@
 
 namespace DevGenii\SocialConnect\Helper;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
-
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
@@ -60,6 +58,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $imageFactory;
 
+    /** @var  \Magento\Framework\Api\AttributeValueFactory */
+    protected $customAttributeValueFactory;
+
     /**
      * Data constructor.
      * @param \Magento\Framework\App\State $appState
@@ -70,6 +71,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Customer\Api\GroupManagementInterface $customerGroupManagement
      * @param \Magento\Customer\Api\AccountManagementInterface $accountManagement
+     * @param \Magento\Framework\Api\AttributeValueFactory $customAttributeValueFactory
      * @param \Magento\Framework\App\Helper\Context $context
      */
     public function __construct(
@@ -82,8 +84,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Customer\Api\GroupManagementInterface $customerGroupManagement,
         \Magento\Customer\Api\AccountManagementInterface $accountManagement,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
-        \Magento\Framework\Image\Factory $imageFactory,
+        \Magento\Framework\Api\AttributeValueFactory $customAttributeValueFactory,
 
         // Parent
         \Magento\Framework\App\Helper\Context $context
@@ -98,8 +99,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->customerGroupManagement = $customerGroupManagement;
         $this->accountManagement = $accountManagement;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->writeFactory = $writeFactory;
-        $this->imageFactory = $imageFactory;
+        $this->customAttributeValueFactory = $customAttributeValueFactory;
 
         // Parent
         parent::__construct($context);
@@ -143,9 +143,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $tokenAttribute
     )
     {
+        $idAttribute = $this->customAttributeValueFactory->create()
+                ->setAttributeCode($idAttribute)
+                ->setValue($id);
+
+        $tokenAttribute = $this->customAttributeValueFactory->create()
+            ->setAttributeCode($tokenAttribute)
+            ->setValue(serialize($token));
+
         $customer->setCustomAttributes([
-            $idAttribute => $id,
-            $tokenAttribute => serialize($token)
+            $idAttribute,
+            $tokenAttribute
         ]);
 
         $this->customerRepository->save($customer);
@@ -174,7 +182,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $store = $this->storeManager->getStore();
 
-        $customerData = array(
+        $customerData = [
             'firstname' => $firstName,
             'lastname' => $lastName,
             'email' => $email,
@@ -190,7 +198,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     \Magento\Framework\Api\AttributeInterface::VALUE => serialize($token)
                 ],
             ]
-        );
+        ];
 
         /** @var \Magento\Customer\Api\Data\CustomerInterface $customer */
         $customerDataObject = $this->customerFactory->create();
@@ -211,6 +219,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $password = null;
         $redirectUrl = '';
 
+        /** @var \Magento\Customer\Api\Data\CustomerInterface $customer */
         $customer = $this->accountManagement
             ->createAccount($customerDataObject, $password, $redirectUrl);
 
@@ -258,5 +267,33 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             return null;
         }
+    }
+
+    /**
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param $idAttribute
+     * @param $tokenAttribute
+     * @throws \Exception
+     */
+    public function disconnectByCustomer(
+        \Magento\Customer\Api\Data\CustomerInterface $customer,
+        $idAttribute,
+        $tokenAttribute
+    )
+    {
+        $idAttribute = $this->customAttributeValueFactory->create()
+            ->setAttributeCode($idAttribute)
+            ->setValue(null);
+
+        $tokenAttribute = $this->customAttributeValueFactory->create()
+            ->setAttributeCode($tokenAttribute)
+            ->setValue(null);
+
+        $customer->setCustomAttributes([
+            $idAttribute,
+            $tokenAttribute
+        ]);
+
+        $this->customerRepository->save($customer);
     }
 }

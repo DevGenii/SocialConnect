@@ -4,7 +4,8 @@ namespace DevGenii\SocialConnect\Block\Facebook;
 
 class Button extends \Magento\Framework\View\Element\Template
 {
-    const AJAX_ROUTE = 'socialconnect/facebook/connect';
+    const AJAX_ROUTE_CONNECT = 'socialconnect/facebook/connect';
+    const AJAX_ROUTE_DISCONNECT = 'socialconnect/facebook/disconnect';
 
     /**
      * @var \Magento\Framework\Registry
@@ -43,7 +44,7 @@ class Button extends \Magento\Framework\View\Element\Template
 
         // Parent
         \Magento\Framework\View\Element\Template\Context $context,
-        array $data = array())
+        array $data = [])
     {
 
         $this->configFacebook = $configFacebook;
@@ -109,6 +110,15 @@ class Button extends \Magento\Framework\View\Element\Template
      */
     public function getAjaxUrl()
     {
-        return $this->getUrl(self::AJAX_ROUTE);
+        /** @var \DevGenii\SocialConnect\Model\Facebook\Data\Customer|null $data */
+        $data = $this->registry->registry('devgenii_socialconnect_facebook_data');
+
+        if (is_null($data)) {
+            return $this->getUrl(self::AJAX_ROUTE_CONNECT);
+        } else {
+            return $this->getUrl(self::AJAX_ROUTE_DISCONNECT);
+        }
+
+
     }
 }
