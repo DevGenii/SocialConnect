@@ -43,7 +43,7 @@ define([
             }
         },
         'DevGenii_SocialConnect/facebook/button': function (config) {
-            this.config = config;
+            this.config = window.checkoutConfig.devGeniiSocialConnect || config;
             this.init();
             this.subscribe();
         }
