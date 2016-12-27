@@ -37,13 +37,15 @@ define([
                     success: function(data) {
                         if(data && 'redirect' in data) {
                             window.location.replace(data.redirect);
+                        } else {
+                            window.location.reload();
                         }
                     }
                 });
             }
         },
         'DevGenii_SocialConnect/facebook/button': function (config) {
-            this.config = window.checkoutConfig.devGeniiSocialConnect || config;
+            this.config = config;
             this.init();
             this.subscribe();
         }

@@ -24,18 +24,28 @@ class CheckoutButtonConfigProvider implements ConfigProviderInterface
     protected $customerSession;
 
     /**
+     * Url Builder
+     *
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
      * CustomConfigProvider constructor.
      * @param ConfigInterface $configFacebook
      * @param \DevGenii\SocialConnect\Helper\Data $helper
+     * @param \Magento\Framework\UrlInterface $urlBuilder
      */
     public function __construct(
         \DevGenii\SocialConnect\Model\Facebook\ConfigInterface $configFacebook,
         \DevGenii\SocialConnect\Helper\Data $helper,
-        \Magento\Customer\Model\Session $customerSession)
+        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\UrlInterface $urlBuilder)
     {
         $this->configFacebook = $configFacebook;
         $this->helper = $helper;
         $this->customerSession = $customerSession;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -43,6 +53,7 @@ class CheckoutButtonConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
+        $enabled = $this->configFacebook->isEnabled();
         $appId = $this->configFacebook->getClientId();
 
         $state = $this->helper->generateCsrfToken();
@@ -53,10 +64,11 @@ class CheckoutButtonConfigProvider implements ConfigProviderInterface
         $config = [
             'devGeniiSocialConnect' => [
                 'facebook' => [
+                    'enabled' => $enabled,
                     'appId' => $appId,
                     'state' => $state,
-                    'ajaxUrl' => \DevGenii\SocialConnect\Block\Facebook\Button::AJAX_ROUTE_CONNECT,
-                    'scope' => $this->configFacebook->getScope()
+                    'ajaxUrl' => $this->urlBuilder->getUrl(\DevGenii\SocialConnect\Block\Facebook\Button::AJAX_ROUTE_CONNECT),
+                    'scope' => $scope
                 ]
             ]
         ];
