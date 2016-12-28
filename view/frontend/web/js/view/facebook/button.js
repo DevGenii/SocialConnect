@@ -17,10 +17,7 @@ define(
                 template: 'DevGenii_SocialConnect/facebook/button'
             },
             initialize: function () {
-                // Initialize button only if enabled
-                if(this.isEnabled() && !this.isLoggedIn()) {
-                    this._super();
-                }
+                this._super();
             },
             isLoggedIn: function () {
                 return customer.isLoggedIn();
@@ -29,19 +26,21 @@ define(
                 return ((((window.checkoutConfig || {}).devGeniiSocialConnect || {}).facebook || {}).enabled == true);
             },
             afterRender: function (element) {
-                // Scope is configurable
-                $(element).data(
-                    'scope',
-                    window.checkoutConfig.devGeniiSocialConnect.facebook.scope
-                );
+                if(this.isEnabled() && !this.isLoggedIn()) {
+                    // Scope is configurable
+                    $(element).data(
+                        'scope',
+                        window.checkoutConfig.devGeniiSocialConnect.facebook.scope
+                    );
 
-                // Initialize button module
-                var module = 'DevGenii_SocialConnect/facebook/button';
-                require([module], function(button) {
-                    if($.isFunction(button[module])) {
-                        button[module](window.checkoutConfig.devGeniiSocialConnect.facebook);
-                    }
-                })
+                    // Initialize button module
+                    var module = 'DevGenii_SocialConnect/facebook/button';
+                    require([module], function(button) {
+                        if($.isFunction(button[module])) {
+                            button[module](window.checkoutConfig.devGeniiSocialConnect.facebook);
+                        }
+                    })
+                }
             }
         });
     }
