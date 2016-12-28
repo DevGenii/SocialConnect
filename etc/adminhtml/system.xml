@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
-
+<!--
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="devgenii_socialconnect" translate="label" type="text" sortOrder="9999" showInDefault="1" showInWebsite="1" showInStore="1">

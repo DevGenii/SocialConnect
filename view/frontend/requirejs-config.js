@@ -1,3 +1,8 @@
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 var config = {
     shim: {
         'DevGenii_SocialConnect/fb-sdk' : {

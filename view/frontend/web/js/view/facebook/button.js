@@ -1,3 +1,8 @@
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+/*jshint browser:true jquery:true*/
 define(
     [
         'jquery',
@@ -13,10 +18,15 @@ define(
             },
             initialize: function () {
                 // Initialize button only if enabled
-                if((((window.checkoutConfig || {}).devGeniiSocialConnect || {}).facebook || {}).enabled &&
-                    !customer.isLoggedIn()) {
+                if(this.isEnabled() && !this.isLoggedIn()) {
                     this._super();
                 }
+            },
+            isLoggedIn: function () {
+                return customer.isLoggedIn();
+            },
+            isEnabled: function () {
+                return ((((window.checkoutConfig || {}).devGeniiSocialConnect || {}).facebook || {}).enabled == true);
             },
             afterRender: function (element) {
                 // Scope is configurable

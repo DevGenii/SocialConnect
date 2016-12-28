@@ -1,3 +1,8 @@
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+/*jshint browser:true jquery:true*/
 define([
     'jquery',
     'DevGenii_SocialConnect/fb-sdk'

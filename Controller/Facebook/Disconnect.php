@@ -1,7 +1,10 @@
 <?php
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace DevGenii\SocialConnect\Controller\Facebook;
-use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 
 class Disconnect extends \Magento\Framework\App\Action\Action
 {
@@ -36,7 +39,6 @@ class Disconnect extends \Magento\Framework\App\Action\Action
     // Parent
     \Magento\Framework\App\Action\Context $context)
     {
-        $this->accountRedirect = $accountRedirect;
         $this->customerSession = $customerSession;
         $this->helperData = $helperData;
         $this->customerDataFactory = $customerDataFactory;

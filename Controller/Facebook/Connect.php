@@ -1,7 +1,10 @@
 <?php
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace DevGenii\SocialConnect\Controller\Facebook;
-use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 
 class Connect extends \Magento\Framework\App\Action\Action
 {
@@ -41,7 +44,6 @@ class Connect extends \Magento\Framework\App\Action\Action
         \DevGenii\SocialConnect\Helper\Data $helperData,
         \DevGenii\SocialConnect\Model\Facebook\DataFactory $dataFactory,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
-        AccountRedirect $accountRedirect,
 
         // Parent
         \Magento\Framework\App\Action\Context $context)
