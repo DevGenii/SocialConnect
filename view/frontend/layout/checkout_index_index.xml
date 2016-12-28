@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="checkout.root">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="checkout" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="authentication" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="devgenii-socialconnect-container" xsi:type="array">
+                                            <item name="component" xsi:type="string">uiComponent</item>
+                                            <item name="config" xsi:type="array">
+                                                <item name="template" xsi:type="string">DevGenii_SocialConnect/container</item>
+                                            </item>
+                                            <item name="children" xsi:type="array">
+                                                <item name="devgenii-socialconnect-button-facebook" xsi:type="array">
+                                                    <item name="component" xsi:type="string">DevGenii_SocialConnect/js/view/facebook/button</item>
+                                                    <item name="displayArea" xsi:type="string">devgenii-social-connect-buttons</item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                                <item name="steps" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="shipping-step" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="shippingAddress" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="customer-email" xsi:type="array">
+                                                            <item name="children" xsi:type="array">
+                                                                <item name="before-login-form" xsi:type="array">
+                                                                    <item name="children" xsi:type="array">
+                                                                        <item name="devgenii-socialconnect-container" xsi:type="array">
+                                                                            <item name="component" xsi:type="string">uiComponent</item>
+                                                                            <item name="config" xsi:type="array">
+                                                                                <item name="template" xsi:type="string">DevGenii_SocialConnect/container</item>
+                                                                            </item>
+                                                                            <item name="children" xsi:type="array">
+                                                                                <item name="devgenii-socialconnect-button-facebook" xsi:type="array">
+                                                                                    <item name="component" xsi:type="string">DevGenii_SocialConnect/js/view/facebook/button</item>
+                                                                                    <item name="displayArea" xsi:type="string">devgenii-social-connect-buttons</item>
+                                                                                </item>
+                                                                            </item>
+                                                                        </item>
+                                                                    </item>
+                                                                </item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                        <item name="billing-step" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="payment" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="customer-email" xsi:type="array">
+                                                            <item name="children" xsi:type="array">
+                                                                <item name="before-login-form" xsi:type="array">
+                                                                    <item name="devgenii-socialconnect-container" xsi:type="array">
+                                                                        <item name="component" xsi:type="string">uiComponent</item>
+                                                                        <item name="config" xsi:type="array">
+                                                                            <item name="template" xsi:type="string">DevGenii_SocialConnect/container</item>
+                                                                        </item>
+                                                                        <item name="children" xsi:type="array">
+                                                                            <item name="devgenii-socialconnect-button-facebook" xsi:type="array">
+                                                                                <item name="component" xsi:type="string">DevGenii_SocialConnect/js/view/facebook/button</item>
+                                                                                <item name="displayArea" xsi:type="string">devgenii-social-connect-buttons</item>
+                                                                            </item>
+                                                                        </item>
+                                                                    </item>
+                                                                </item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

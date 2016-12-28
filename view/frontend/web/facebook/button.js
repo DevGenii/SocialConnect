@@ -37,6 +37,8 @@ define([
                     success: function(data) {
                         if(data && 'redirect' in data) {
                             window.location.replace(data.redirect);
+                        } else {
+                            window.location.reload();
                         }
                     }
                 });

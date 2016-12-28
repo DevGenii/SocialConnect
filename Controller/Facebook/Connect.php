@@ -6,11 +6,6 @@ use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 class Connect extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var AccountRedirect
-     */
-    protected $accountRedirect;
-
-    /**
      * @var \Magento\Customer\Model\Session
      */
     protected $customerSession;
@@ -38,7 +33,6 @@ class Connect extends \Magento\Framework\App\Action\Action
      * @param \DevGenii\SocialConnect\Helper\Facebook $helperFacebook
      * @param \DevGenii\SocialConnect\Helper\Data $helperData
      * @param \DevGenii\SocialConnect\Model\Facebook\DataFactory $dataFactory
-     * @param AccountRedirect $accountRedirect
      * @param \Magento\Framework\App\Action\Context $context
      */
     public function __construct(
@@ -52,7 +46,6 @@ class Connect extends \Magento\Framework\App\Action\Action
         // Parent
         \Magento\Framework\App\Action\Context $context)
     {
-        $this->accountRedirect = $accountRedirect;
         $this->customerSession = $customerSession;
         $this->helperFacebook = $helperFacebook;
         $this->helperData = $helperData;
@@ -75,9 +68,7 @@ class Connect extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        $return = [
-            'redirect' => $this->accountRedirect->getRedirect()
-        ];
+        $return = [];
 
         echo json_encode($return);
     }

@@ -6,11 +6,6 @@ use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 class Disconnect extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var AccountRedirect
-     */
-    protected $accountRedirect;
-
-    /**
      * @var \Magento\Customer\Model\Session
      */
     protected $customerSession;
@@ -31,11 +26,9 @@ class Disconnect extends \Magento\Framework\App\Action\Action
      *
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \DevGenii\SocialConnect\Helper\Data $helperData
-     * @param AccountRedirect $accountRedirect
      * @param \Magento\Framework\App\Action\Context $context
      */
     public function __construct(
-    AccountRedirect $accountRedirect,
     \Magento\Customer\Model\Session $customerSession,
     \DevGenii\SocialConnect\Helper\Data $helperData,
     \DevGenii\SocialConnect\Model\Facebook\Data\CustomerFactory $customerDataFactory,
@@ -65,9 +58,7 @@ class Disconnect extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        $return = [
-            'redirect' => $this->accountRedirect->getRedirect()
-        ];
+        $return = [];
 
         echo json_encode($return);
     }
