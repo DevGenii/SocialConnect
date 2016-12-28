@@ -13,7 +13,7 @@
                 <block class="DevGenii\SocialConnect\Block\Facebook\Button"
                        name="devgenii_socialconnect.login.facebook.button" template="DevGenii_SocialConnect::facebook/button.phtml" cacheable="false">
                     <arguments>
-                        <argument name="button_text" translate="true" xsi:type="string">Login</argument>
+                        <argument name="button_text" translate="true" xsi:type="string">Log In</argument>
                     </arguments>
                 </block>
             </block>
