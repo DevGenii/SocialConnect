@@ -72,18 +72,12 @@ class Customer
      * Otherwise it will return value of the element specified by $key.
      * It is possible to use keys like a/b/c for access nested array data
      *
-     * If $index is specified it will assume that attribute data is an array
-     * and retrieve corresponding member. If data is the string - it will be explode
-     * by new line character and converted to array.
-     *
      * @param string     $key
-     * @param string|int $index
      * @return mixed
      */
-
-    public function getData($key = '', $index = null)
+    public function getData($key = '')
     {
-        return $this->data->getData($key, $index);
+        return $this->data->getData($key);
     }
 
     /**

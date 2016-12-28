@@ -64,7 +64,6 @@ class Data
      * @param string     $key
      * @return mixed
      */
-
     public function getData($key = '')
     {
         if ('' === $key) {
