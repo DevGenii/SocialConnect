@@ -267,7 +267,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getCustomerByEmail($email)
     {
         try {
-            $this->customerRepository->get($email);
+            return $this->customerRepository->get($email);
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             return null;
         }

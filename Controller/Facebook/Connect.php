@@ -148,11 +148,10 @@ class Connect extends \Magento\Framework\App\Action\Action
         // #3 - Handle users attempting to login/register if Magento customer account with their email already exists
         $customerByEmail = $this->helperData->getCustomerByEmail($data->getEmail());
         if($customerByEmail && $customerByEmail->getId()) {
-            $customer = $customerByEmail->getDataModel();
             $this->helperFacebook->connectByCustomer(
                 $data->getId(),
                 $token,
-                $customer
+                $customerByEmail
             );
 
             // Log customer in
