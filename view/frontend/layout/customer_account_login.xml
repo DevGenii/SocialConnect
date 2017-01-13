@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="customer.login.container">
+            <block class="DevGenii\SocialConnect\Block\Container\Login" name="devgenii_socialconnect.login"
+                   template="DevGenii_SocialConnect::login.phtml" cacheable="false">
+                <block class="DevGenii\SocialConnect\Block\Facebook\Button"
+                       name="devgenii_socialconnect.login.facebook.button" template="DevGenii_SocialConnect::facebook/button.phtml" cacheable="false">
+                    <arguments>
+                        <argument name="button_text" translate="true" xsi:type="string">Log In</argument>
+                    </arguments>
+                </block>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

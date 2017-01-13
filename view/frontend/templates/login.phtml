@@ -1,0 +1,17 @@
+<?php
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
+/** @var $block \DevGenii\SocialConnect\Block\Container\Login */
+?>
+<div class="devgenii-socialconnect-container devgenii-socialconnect-container-login">
+    <?php if($block->facebookEnabled()): ?>
+    <div class="devgenii-socialconnect-login-facebook">
+        <h3><?= __('Facebook Connect') ?></h3>
+        <p><?= __('You can login using your Facebook account.') ?></p>
+        <?= $block->getChildHtml('devgenii_socialconnect.login.facebook.button'); ?>
+    </div>
+    <?php endif; ?>
+</div>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    Magento 2 issue #6175 "Unable to generate unsecure URL if current URL is secure"
+    https://github.com/magento/magento2/issues/6175
+    -->
+     <type name="DevGenii\SocialConnect\Block\Adminhtml\System\Config\Form\Base">
+         <arguments>
+             <argument name="url" xsi:type="object">DevGenii\SocialConnect\Model\Framework\Url</argument>
+         </arguments>
+    </type>
+</config>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="devgenii_socialconnect" translate="label" type="text" sortOrder="9999" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>DevGenii Social Connect</label>
+            <tab>customer</tab>
+            <resource>Magento_Customer::config_customer</resource>
+            <group id="support" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Support</label>
+                <attribute type="expanded">1</attribute>
+                <field id="professional_support" translate="label" type="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Professional Support</label>
+                    <frontend_model>DevGenii\SocialConnect\Block\Adminhtml\System\Config\Form\Link\Support</frontend_model>
+                </field>
+            </group>
+            <group id="facebook" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Login with Facebook</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="client_id" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Facebook App ID</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="client_secret" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Facebook App Secret</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="origin" translate="label" type="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>App Domain</label>
+                    <frontend_model>DevGenii\SocialConnect\Block\Adminhtml\System\Config\Form\Origin</frontend_model>
+                </field>
+                <field id="redirect" translate="label" type="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>OAuth Redirect URI</label>
+                    <frontend_model>DevGenii\SocialConnect\Block\Adminhtml\Facebook\System\Config\Form\Redirect</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,13 @@
+<!--
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<div class="devgenii-socialconnect-container devgenii-socialconnect-container-checkout">
+    <!-- ko foreach: getRegion('devgenii-social-connect-buttons') -->
+        <!-- ko if: (!isLoggedIn() && isEnabled() && hasTemplate()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+        <!-- /ko -->
+    <!--/ko-->
+</div>

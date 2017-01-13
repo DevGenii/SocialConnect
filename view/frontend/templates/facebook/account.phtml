@@ -1,0 +1,14 @@
+<?php
+/**
+ * Copyright © 2016 DevGenii. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
+/** @var $block \DevGenii\SocialConnect\Block\Facebook\Account */
+?>
+<?php if($block->isConnected()): ?>
+    <p><?= __('Here you can disconnect your store account from your Facebook account.') ?></p>
+<?php else: ?>
+    <p><?= __('Here you can connect your store account with your Facebook account making it easier for you to login in the future.') ?></p>
+<?php endif; ?>
+<?= $block->getChildHtml('devgenii_socialconnect.account.facebook.button') ?>
